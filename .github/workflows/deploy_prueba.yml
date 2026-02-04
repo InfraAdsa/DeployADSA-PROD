@@ -16,14 +16,14 @@ jobs:
       - name: Añadir clave SSH al agente
         uses: webfactory/ssh-agent@v0.4.1
         with:
-          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_170}} # Usa el nombre del secreto que creaste
+          ssh-private-key: ${{secrets.SSH_DEVOPS}} # Usa el nombre del secreto que creaste
 
       - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.SSH_HOST_170}} # Tu nombre de host
-          username: ${{secrets.SSH_USERNAME_170}} # Tu nombre de usuario
-          key: ${{secrets.SSH_PRIVATE_KEY_170}} # Clave privada
+          host: ${{secrets.SERVER_TEST}} # Tu nombre de host
+          username: ${{secrets.USER_SERVER_TEST}} # Tu nombre de usuario
+          key: ${{secrets.SSH_DEVOPS}} # Clave privada
           script: |
             cd /home/GIT     # Navega al directorio de tu aplicación
             ls -lrt
@@ -33,8 +33,4 @@ jobs:
               sleep 20
               docker images
               sleep 20
-             # Enviar correo 
-              cd /home/GIT 
-              docker ps -a | head -2 > deploy.txt
-              mail -s "Deploy realizado " joseantonio.lopez@seccionamarilla.com < deploy.txt
-              echo "Fin del workflow"
+           
