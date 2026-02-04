@@ -25,7 +25,8 @@ jobs:
           username: ${{secrets.USER_SERVER_TEST}} # Tu nombre de usuario
           key: ${{secrets.SSH_DEVOPS}} # Clave privada
           script: |
-            cd /home/GIT     # Navega al directorio de tu aplicación
+            pwd 
+            echo "prueba de conexion
             ls -lrt
             echo "Hola  ...     prueba "
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
