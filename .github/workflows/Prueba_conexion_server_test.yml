@@ -29,6 +29,7 @@ jobs:
             echo "prueba de conexion
             ls -lrt
             echo "Hola  ...     prueba "
+            echo "hola 2  ..."
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               docker ps -a
               sleep 20
