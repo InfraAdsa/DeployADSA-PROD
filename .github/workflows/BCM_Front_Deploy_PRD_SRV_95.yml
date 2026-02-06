@@ -23,7 +23,7 @@ jobs:
          host: ${{secrets.HOSTNAME_95}} # Tu nombre de host
          username: ${{secrets.SSH_USERNAME_95}} # Tu nombre de usuario
          key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
-         script:
+         script: |
            echo "##### Path servidor 172 #####
            cd /adsaenv/adsa/app/adsaweb
            pwd
