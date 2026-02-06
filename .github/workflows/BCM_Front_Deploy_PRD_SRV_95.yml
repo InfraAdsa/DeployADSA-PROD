@@ -1,8 +1,9 @@
 name: BCM_Front_SRV_95 --- sa-bcm-wfmforms-ui ---
 on:
+  #### push: cambio de automatico a manual
   workflow_dispatch:
     branches:
-      - main # Aqui va la rama
+      - main # O la rama que desees
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
@@ -14,52 +15,52 @@ jobs:
       - name: Añadir clave SSH al agente
         uses: webfactory/ssh-agent@v0.4.1
         with:
-         ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
+         ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Usa el nombre del secreto que creaste
 
       - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
         with:
-          host: ${{secrets.SSH_HOST_95}} 	# Nombre de host
-          username: ${{secrets.SSH_USERNAME_95}} # nombre de usuario
-          key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
-          script: |
-            echo "##### Path servidor 172 #####"
-            cd /adsaenv/adsa/app/adsaweb
-            pwd
-            ls -lrt 
-            echo "##### Respaldo de la carpeta sa-bcm-wfmforms-ui #####"
-            mv sa-bcm-wfmforms-ui /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui_$(date +'%Y%m%d-%H%M')
-            ls -lrt 
-            echo '##### Clonar el repositorio sa-bcm-wfmforms-ui #####'
-            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
-            echo '##### Repositorio clonado #####'
-            ls -lrt
-            sleep 20
-            echo '##### Detener y eliminar el Contenedor sa-bcm-wfmforms-ui #####'
-            docker ps
-            docker stop bcm-wfmforms-ui-container
-            sleep 20
-            docker rm bcm-wfmforms-ui-container
-            echo '##### Eliminando la imagen... #####'
-            docker images
-            sleep 20
-            docker rmi bcm-wfmforms-ui
-            docker images
-            echo '##### Ejecutando el Build y Deploy #####'
-            cd  /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui
-            ls -lrt
-            docker build -t bcm-wfmforms-ui .
-            sleep 20
-            echo '##### Iniciar contenedor #####' 
-            docker run -d -p 5103:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name  bcm-wfmforms-ui-container bcm-wfmforms-ui
-            sleep 20
-            echo '##### Contenedores corriendo #####'
-            docker ps -a
-            echo '###### Enviar correo ######'
-            cd /adsaenv/adsa/app/adsaweb
-            docker ps -a > deploy.txt
-            echo >> deploy.txt; echo '##### Logs del contenedor bcm-wfmforms-ui-container #####' >> deploy.txt; echo >> deploy.txt
-            docker logs bcm-wfmforms-ui-container >> deploy.txt
-            mail -s "Deploy realizado proyecto BCM_Front_PRD-- sa-bcm-wfmforms-ui" joseantonio.lopez@seccionamarilla.com < deploy.txt
-            echo '###### fin del workflow ######'
+         host: ${{secrets.HOSTNAME_95}} # Tu nombre de host
+         username: ${{secrets.SSH_USERNAME_95}} # Tu nombre de usuario
+         key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
+         script:
+           echo "##### Path servidor 172 #####
+           cd /adsaenv/adsa/app/adsaweb
+           pwd
+           ls -lrt 
+           echo "##### Respaldo de la carpeta sa-bcm-wfmforms-ui #####"
+           mv sa-bcm-wfmforms-ui /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui_$(date +'%Y%m%d-%H%M')
+           ls -lrt 
+           echo '##### Clonar el repositorio sa-bcm-wfmforms-ui #####'
+           git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
+           echo '##### Repositorio clonado #####'
+           ls -lrt
+           sleep 20
+           echo '##### Detener y eliminar el Contenedor sa-bcm-wfmforms-ui #####'
+           docker ps
+           docker stop bcm-wfmforms-ui-container
+           sleep 20
+           docker rm bcm-wfmforms-ui-container
+           echo '##### Eliminando la imagen... #####'
+           docker images
+           sleep 20
+           docker rmi bcm-wfmforms-ui
+           docker images
+           echo '##### Ejecutando el Build y Deploy #####'
+           cd  /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui
+           ls -lrt
+           docker build -t bcm-wfmforms-ui .
+           sleep 20
+           echo '##### Iniciar contenedor #####' 
+           docker run -d -p 5103:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name  bcm-wfmforms-ui-container bcm-wfmforms-ui
+           sleep 20
+           echo '##### Contenedores corriendo #####'
+           docker ps -a
+           echo '###### Enviar correo ######'
+           cd /adsaenv/adsa/app/adsaweb
+           docker ps -a > deploy.txt
+           echo >> deploy.txt; echo '##### Logs del contenedor bcm-wfmforms-ui-container #####' >> deploy.txt; echo >> deploy.txt
+           docker logs bcm-wfmforms-ui-container >> deploy.txt
+           mail -s "Deploy realizado proyecto BCM_Front_PRD-- sa-bcm-wfmforms-ui" joseantonio.lopez@seccionamarilla.com < deploy.txt
+          echo '###### fin del workflow ######'
         
