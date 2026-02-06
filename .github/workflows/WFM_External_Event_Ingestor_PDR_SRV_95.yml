@@ -28,7 +28,7 @@ jobs:
             pwd
             ls -lrt 
             echo "###  respaldo del repositorio del servidor ###"
-            mv sa-wfm-event-ingestor-svc /adsaenv/adsa/app/adsaweb/sa-wfm-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
+            mv sa-external-event-ingestor-svc /adsaenv/adsa/app/adsaweb/sa-external-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
             ls -lrt 
             echo '### Clonar el repositorio sa-wfm-event-ingestor-svc ###'
             git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-external-event-ingestor-svc.git
@@ -46,7 +46,7 @@ jobs:
             docker rmi wfm-producer
             docker images
             echo '### Ejecutar el build y el deploy ###'
-            cd /adsaenv/adsa/app/adsaweb/sa-wfm-event-ingestor-svc/WFM.DataHub
+            cd /adsaenv/adsa/app/adsaweb/sa-external-event-ingestor-svc
             ls -lrt
             docker build -t wfm-producer .
             sleep 40
