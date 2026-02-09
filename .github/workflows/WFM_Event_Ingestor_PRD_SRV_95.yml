@@ -31,7 +31,8 @@ jobs:
             mv sa-wfm-event-ingestor-svc //adsaenv/adsa/app/adsaweb/sa-wfm-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
             ls -lrt 
             echo '### Clonar el repositorio sa-wfm-event-ingestor-svc ###'
-            git clone -b main https://${{secrets.GH_ACCESS_KEY_JA}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git            
+            ### git clone -b main https://${{secrets.GH_ACCESS_KEY_JA}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git
+            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git            
             echo '### Repositorio clonado sa-wfm-event-ingestor-svc ###' 
             ls -lrt
             sleep 20
