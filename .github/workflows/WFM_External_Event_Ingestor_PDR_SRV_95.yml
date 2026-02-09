@@ -31,7 +31,7 @@ jobs:
             mv sa-external-event-ingestor-svc /adsaenv/adsa/app/adsaweb/sa-external-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
             ls -lrt 
             echo '### Clonar el repositorio sa-wfm-event-ingestor-svc ###'
-            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-external-event-ingestor-svc.git
+            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/jeacor/sa-external-event-ingestor-svc.git
             echo '### Repositorio clonado ###' 
             ls -lrt
             sleep 40
