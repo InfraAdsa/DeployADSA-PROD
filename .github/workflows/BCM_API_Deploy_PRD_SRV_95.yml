@@ -51,7 +51,7 @@ jobs:
             docker build -t bcm-api-app .
             sleep 20
             #docker run -d -p 4400:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name bcm-api-container bcm-api-app
-            docker run -d -p 4300:8080 -e ASPNETCORE_ENVIRONMENT=PROD -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name bcm-api-container bcm-api-app
+            docker run -d -p 4400:8080 -e ASPNETCORE_ENVIRONMENT=PROD -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name bcm-api-container bcm-api-app
             sleep 20
             echo '### contenedores corriendo ###'
             docker ps -a
