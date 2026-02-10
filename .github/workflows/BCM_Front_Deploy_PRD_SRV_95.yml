@@ -51,7 +51,8 @@ jobs:
             docker build -t bcm-wfmforms-ui .
             sleep 20
             echo '##### Iniciar contenedor #####' 
-            docker run -d -p 5103:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name  bcm-wfmforms-ui-container bcm-wfmforms-ui
+            ### docker run -d -p 5103:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name  bcm-wfmforms-ui-container bcm-wfmforms-ui
+            docker run -d -p 5103:8080 -v ASPNETCORE_ENVIRONMENT=PROD dataprotection-keys:/root/.aspnet/DataProtection-Keys --name  bcm-wfmforms-ui-container bcm-wfmforms-ui
             sleep 20
             echo '##### Contenedores corriendo #####'
             docker ps -a
