@@ -1,4 +1,4 @@
-name: WFM_Event_Consumer_PRD_SRV_95 --- sa-wfm-event-consumer-svc ---
+name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc ---
 on:
   workflow_dispatch:
     branches:
@@ -28,36 +28,37 @@ jobs:
             pwd
             ls -lrt 
             echo "###  respaldo del repositorio del servidor ###"
-            mv sa-wfm-event-consumer-svc /adsaenv/adsa/app/adsaweb/sa-wfm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
+            mv sa-wfm-event-consumer-svc /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
             ls -lrt 
-            echo '### Clonar el repositorio sa-wfm-event-consumer-svc ###'
-            git clone -b pet-2025 https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-wfm-event-consumer-svc.git
+            echo '### Clonar el repositorio sa-bcm-event-consumer-svc ###'
+            #git clone -b pet-2025 https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-wfm-event-consumer-svc.git
+            git clone -b main https://${{secrets.GH_ACCESS_KEY_JA}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
             echo '### Repositorio clonado ###' 
             ls -lrt
             sleep 20
-            echo '### Detener y eliminar el Contenedor wfm-event-consumer ###'
+            echo '### Detener y eliminar el Contenedor  bcm-event-consumer-app ###'
             docker ps
-            docker stop wfm-event-consumer-container
+            docker stop  bcm-event-consumer-app
             sleep 20
-            docker rm wfm-event-consumer-container
-            echo '### eliminimar la imagen ###'
+            docker rm  bcm-event-consumer-app
+            echo '### eliminimar la imagen  bcm-event-consumer-app ###'
             docker images
             sleep 20
-            docker rmi wfm-event-consumer
+            docker rmi  bcm-event-consumer
             docker images
             echo '### Ejecutar el build y el deploy ###'
-            cd /adsaenv/adsa/app/adsaweb/sa-wfm-event-consumer-svc
+            cd /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc
             ls -lrt
-            docker build -t wfm-event-consumer .
+            docker build -t bcm-event-consumer .
             sleep 40
-            docker run -d -p 8182:8080 --name wfm-event-consumer-container wfm-event-consumer
+            docker run -d -p  8188:8088 -e SPRING_PROFILES_ACTIVE=PROD --name bcm-event-consumer-app bcm-event-consumer
             sleep 20
-            echo '### contenedores corriendo ###'
+            echo '### contenedores corriendo  bcm-event-consumer-app ###'
             docker ps -a
             echo '###### Enviar correo ######'
-            cd /home/GIT
+            cd /adsaenv/adsa/app/adsaweb
             docker ps -a > deploy.txt
-            echo >> deploy.txt; echo '##### Logs del contenedor Productivo sa-wfm-event-consumer-svc #####' >> deploy.txt; echo >> deploy.txt
-            docker logs wfm-event-consumer_container >> deploy.txt
-            mail -s "Deploy realizado proyecto PRD  wfm-event-consumer" joseantonio.lopez@seccionamarilla.com < deploy.txt
+            echo >> deploy.txt; echo '##### Logs del contenedor Productivo bcm-event-consumer-app #####' >> deploy.txt; echo >> deploy.txt
+            docker logs bcm-event-consumer-app >> deploy.txt
+            mail -s "Deploy realizado proyecto PRD  bcm-event-consumer-app" joseantonio.lopez@seccionamarilla.com < deploy.txt
             echo '###### fin del workflow ######'
