@@ -50,7 +50,8 @@ jobs:
             ls -lrt
             docker build -t wfm-producer .
             sleep 40
-            docker run -d -p 5100:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
+            ### docker run -d -p 5100:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
+            docker run -d -p 5100:8080 -e ASPNETCORE_ENVIRONMENT=Production -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
             sleep 20
             echo '### contenedores corriendo ###'
             docker ps -a
