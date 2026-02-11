@@ -26,9 +26,9 @@ jobs:
             echo "### path servidor 8.95 ###"
             cd /adsaenv/adsa/app/adsaweb
             pwd
-            ls -lrt 
+            ### ls -lrt 
             echo "###  respaldo del repositorio del servidor ###"
-            mv sa-wfm-event-ingestor-svc //adsaenv/adsa/app/adsaweb/sa-wfm-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
+            mv sa-wfm-event-ingestor-svc /adsaenv/adsa/app/adsaweb/sa-wfm-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
             ls -lrt 
             echo '### Clonar el repositorio sa-wfm-event-ingestor-svc ###'
             git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git
