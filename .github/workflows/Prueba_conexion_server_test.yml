@@ -18,7 +18,9 @@ jobs:
         with:
           ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Usa el nombre del secreto que creaste   
       - name: mi secreto
-        run: echo ${{ secrets.SID }}
+        run: echo ${{secrets.SID}}
+      - name: hola  
+        run: echo "Hola"
       - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
         with:
