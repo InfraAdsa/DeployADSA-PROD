@@ -2,8 +2,8 @@ name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc
 
 on:
   workflow_dispatch:
-   branches:
-         - main
+  branches:
+    - main
          
 jobs:
   deploy:
@@ -12,11 +12,11 @@ jobs:
     - name: Deploy remoto
     uses: appleboy/ssh-action@master
     with:
-           host: ${{ secrets.HOSTNAME_95 }}
-           username: ${{ secrets.SSH_USERNAME_95 }}
-           key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
-           envs: DB_USER,DB_PASS,DB_SID,DB_HOST,DB_PORT
-           script: |
+            host: ${{ secrets.HOSTNAME_95 }}
+            username: ${{ secrets.SSH_USERNAME_95 }}
+            key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+            envs: DB_USER,DB_PASS,DB_SID,DB_HOST,DB_PORT
+            script: |
               set -e
               APP_NAME="bcm-event-consumer-app"
               IMAGE_NAME="bcm-event-consumer"
