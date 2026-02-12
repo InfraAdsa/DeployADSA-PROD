@@ -42,9 +42,11 @@ jobs:
             echo " HOLA 2"
             echo ${{secrets.DB_PORT}}
             echo " HOLA 3"
-            echo "$DB_PASSWORD"
-            echo "$DB_USER"
-            echo "Hola  4"
+            echo $DB_PASSWORD
+            echo " HOLA 4"
+            echo '$DB_USER'
+            echo "Hola  5"
+            echo "" fin""
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
