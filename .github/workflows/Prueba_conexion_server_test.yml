@@ -9,11 +9,15 @@ jobs:
   deploy:
     runs-on: [self-hosted, linux]
 
+    env:
+        ORACLE_SID: ${{secrets.DB_SID}}
+        DB_PORT: ${{secrets.DB_PORT}}
+        
     steps:
       - name: Copiar código
         uses: actions/checkout@v3
       - name: mi secreto
-        run: echo ${{secrets.SID}}
+        run: echo ${{secrets.DB_SID}}
       - name: hola  
         run: echo "Hola"
         
@@ -32,10 +36,11 @@ jobs:
             pwd 
             echo "prueba de conexion servidor 10.34.8.95"
             echo " HOLA 1"
-            echo ${{secrets.SID}}
+            echo ${{secrets.DB_SID}}
             echo " HOLA 2"
-            echo ${{ secrets.SID }}
+            echo ${{ secrets.DB_PORT }}
             echo " HOLA 3"
+            
             echo "Hola  4"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
