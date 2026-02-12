@@ -12,7 +12,7 @@ jobs:
     env:
         ORACLE_SID: ${{secrets.DB_SID}}
         DB_PORT: ${{secrets.DB_PORT}}
-        DB_USER: ${{secrets.DB_UESR}}
+        DB_USER: ${{secrets.DB_USER}}
         DB_PASSWORD: ${{secrets.DB_PASS}}
         
     steps:
@@ -40,9 +40,10 @@ jobs:
             echo " HOLA 1"
             echo ${{secrets.DB_SID}}
             echo " HOLA 2"
-            echo ${{ secrets.DB_PORT }}
+            echo ${{secrets.DB_PORT}}
             echo " HOLA 3"
-            echo $DB_PASSWORD
+            echo "$DB_PASSWORD"
+            echo "$DB_USER"
             echo "Hola  4"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
