@@ -1,17 +1,17 @@
 name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc
 
 on:
-  workflow_dispatch:
-  branches:
-    - main
+workflow_dispatch:
+       branches:
+        - main
          
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
     steps:
     - name: Deploy remoto
-    uses: appleboy/ssh-action@master
-    with:
+     uses: appleboy/ssh-action@master
+     with:
             host: ${{ secrets.HOSTNAME_95 }}
             username: ${{ secrets.SSH_USERNAME_95 }}
             key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
