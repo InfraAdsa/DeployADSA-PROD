@@ -10,59 +10,35 @@ jobs:
     runs-on: [self-hosted, linux]
 
     steps:
-      - name: Ejecutar deploy remoto
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOSTNAME_95 }}
-          username: ${{ secrets.SSH_USERNAME_95 }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
-          script: |
-            set -e
+     - name: Deploy remoto
+  uses: appleboy/ssh-action@v0.1.10
+  with:
+    host: ${{ secrets.HOSTNAME_95 }}
+    username: ${{ secrets.SSH_USERNAME_95 }}
+    key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+    envs: DB_USER,DB_PASS,DB_SID,DB_HOST,DB_PORT
+    script: |
+      docker stop bcm-event-consumer-app 2>/dev/null || true
+      docker rm bcm-event-consumer-app 2>/dev/null || true
 
-            APP_NAME="bcm-event-consumer-app"
-            IMAGE_NAME="bcm-event-consumer"
-            BASE_PATH="/adsaenv/adsa/app/adsaweb"
-            REPO_NAME="sa-bcm-event-consumer-svc"
-            BRANCH="main"
+      docker build -t bcm-event-consumer .
 
-            echo "=== Iniciando Deploy ==="
-
-            cd $BASE_PATH
-
-            # Backup si existe
-            if [ -d "$REPO_NAME" ]; then
-              echo "Creando respaldo..."
-              mv $REPO_NAME ${REPO_NAME}_$(date +'%Y%m%d-%H%M')
-            fi
-
-            echo "Clonando repositorio..."
-            git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/$REPO_NAME.git
-
-            cd $REPO_NAME
-
-            echo "Deteniendo contenedor si existe..."
-            docker stop $APP_NAME 2>/dev/null || true
-            docker rm $APP_NAME 2>/dev/null || true
-
-            echo "Eliminando imagen si existe..."
-            docker rmi $IMAGE_NAME 2>/dev/null || true
-
-            echo "Construyendo imagen..."
-            docker build -t $IMAGE_NAME .
-
-            echo "Levantando contenedor..."
-            docker run -d \
-              -p 8188:8088 \
-              -e SPRING_PROFILES_ACTIVE=PROD \
-              --name $APP_NAME \
-              --restart unless-stopped \
-              $IMAGE_NAME
-
-            echo "Generando reporte..."
-            docker ps -a > $BASE_PATH/deploy.txt
-            echo -e "\n##### Logs del contenedor $APP_NAME #####\n" >> $BASE_PATH/deploy.txt
-            docker logs $APP_NAME >> $BASE_PATH/deploy.txt
-
-            mail -s "Deploy PRD realizado - $APP_NAME" joseantonio.lopez@seccionamarilla.com < $BASE_PATH/deploy.txt
-
-            echo "=== Deploy Finalizado ==="
+      docker run -d \
+        -p 8188:8088 \
+        --name bcm-event-consumer-app \
+        --restart unless-stopped \
+        -e DB_USER=$DB_USER \
+        -e DB_PASS=$DB_PASS \
+        -e DB_SID=$DB_SID \
+        -e DB_HOST=$DB_HOST \
+        -e DB_PORT=$DB_PORT \
+        -e SPRING_PROFILES_ACTIVE=PROD \
+        bcm-event-consumer
+  env:
+    DB_USER: ${{ secrets.DB_USER }}
+    DB_PASS: ${{ secrets.DB_PASS }}
+    DB_SID: ${{ secrets.DB_SID }}
+    DB_HOST: ${{ secrets.DB_HOST }}
+    DB_PORT: ${{ secrets.DB_PORT }}
+    
+    echo "=== Deploy Finalizado ==="
