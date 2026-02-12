@@ -1,63 +1,68 @@
-name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc ---
+name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc
+
 on:
   workflow_dispatch:
     branches:
-      - main # Aqui va la rama
+      - main
+
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
 
     steps:
-      - name: Copiar código
-        uses: actions/checkout@v3
-
-      - name: Añadir clave SSH al agente
-        uses: webfactory/ssh-agent@v0.4.1
+      - name: Ejecutar deploy remoto
+        uses: appleboy/ssh-action@v0.1.10
         with:
-         ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
-
-      - name: Conectar y ejecutar comandos en el servidor
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.HOSTNAME_95}} 	# Nombre de host
-          username: ${{secrets.SSH_USERNAME_95}} # nombre de usuario
-          key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
+          host: ${{ secrets.HOSTNAME_95 }}
+          username: ${{ secrets.SSH_USERNAME_95 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
           script: |
-            echo "### path servidor 95 ###"
-            cd /adsaenv/adsa/app/adsaweb
-            pwd
-            ls -lrt 
-            echo "###  respaldo del repositorio del servidor sa-bcm-event-consumer-svc ###"
-            mv sa-bcm-event-consumer-svc /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
-            ls -lrt 
-            echo '### Clonar el repositorio sa-bcm-event-consumer-svc ###'
-            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
-            echo '### Repositorio clonado sa-bcm-event-consumer-svc ###' 
-            ls -lrt
-            sleep 20
-            echo '### Detener y eliminar el Contenedor  bcm-event-consumer-app ###'
-            docker ps
-            docker stop  bcm-event-consumer-app
-            sleep 20
-            docker rm  bcm-event-consumer-app
-            echo '### eliminimar la imagen  bcm-event-consumer-app ###'
-            docker images
-            sleep 20
-            docker rmi  bcm-event-consumer
-            docker images
-            echo '### Ejecutar el build y el deploy ###'
-            cd /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc
-            ls -lrt
-            docker build -t bcm-event-consumer .
-            sleep 40
-            docker run -d -p  8188:8088 -e SPRING_PROFILES_ACTIVE=PROD --name bcm-event-consumer-app bcm-event-consumer
-            sleep 20
-            echo '### contenedores corriendo  bcm-event-consumer-app ###'
-            docker ps -a
-            echo '###### Enviar correo ######'
-            cd /adsaenv/adsa/app/adsaweb
-            docker ps -a > deploy.txt
-            echo >> deploy.txt; echo '##### Logs del contenedor Productivo bcm-event-consumer-app #####' >> deploy.txt; echo >> deploy.txt
-            docker logs bcm-event-consumer-app >> deploy.txt
-            mail -s "Deploy realizado proyecto PRD  bcm-event-consumer-app" joseantonio.lopez@seccionamarilla.com < deploy.txt
-            echo '###### fin del workflow ######'
+            set -e
+
+            APP_NAME="bcm-event-consumer-app"
+            IMAGE_NAME="bcm-event-consumer"
+            BASE_PATH="/adsaenv/adsa/app/adsaweb"
+            REPO_NAME="sa-bcm-event-consumer-svc"
+            BRANCH="main"
+
+            echo "=== Iniciando Deploy ==="
+
+            cd $BASE_PATH
+
+            # Backup si existe
+            if [ -d "$REPO_NAME" ]; then
+              echo "Creando respaldo..."
+              mv $REPO_NAME ${REPO_NAME}_$(date +'%Y%m%d-%H%M')
+            fi
+
+            echo "Clonando repositorio..."
+            git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/$REPO_NAME.git
+
+            cd $REPO_NAME
+
+            echo "Deteniendo contenedor si existe..."
+            docker stop $APP_NAME 2>/dev/null || true
+            docker rm $APP_NAME 2>/dev/null || true
+
+            echo "Eliminando imagen si existe..."
+            docker rmi $IMAGE_NAME 2>/dev/null || true
+
+            echo "Construyendo imagen..."
+            docker build -t $IMAGE_NAME .
+
+            echo "Levantando contenedor..."
+            docker run -d \
+              -p 8188:8088 \
+              -e SPRING_PROFILES_ACTIVE=PROD \
+              --name $APP_NAME \
+              --restart unless-stopped \
+              $IMAGE_NAME
+
+            echo "Generando reporte..."
+            docker ps -a > $BASE_PATH/deploy.txt
+            echo -e "\n##### Logs del contenedor $APP_NAME #####\n" >> $BASE_PATH/deploy.txt
+            docker logs $APP_NAME >> $BASE_PATH/deploy.txt
+
+            mail -s "Deploy PRD realizado - $APP_NAME" joseantonio.lopez@seccionamarilla.com < $BASE_PATH/deploy.txt
+
+            echo "=== Deploy Finalizado ==="
