@@ -13,7 +13,7 @@ jobs:
         ORACLE_SID: ${{secrets.DB_SID}}
         DB_PORT: ${{secrets.DB_PORT}}
         DB_USER: ${{secrets.DB_UESR}}
-        DB_PASSWORD:  ${{secrets.DB_PASS}}
+        DB_PASSWORD: ${{secrets.DB_PASS}}
         
     steps:
       - name: Copiar código
