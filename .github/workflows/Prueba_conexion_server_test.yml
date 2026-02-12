@@ -12,6 +12,8 @@ jobs:
     env:
         ORACLE_SID: ${{secrets.DB_SID}}
         DB_PORT: ${{secrets.DB_PORT}}
+        DB_USER: ${{secrets.DB_UESR}}
+        DB_PASSWORD:  ${{secrets.DB_PASS}}
         
     steps:
       - name: Copiar código
@@ -40,7 +42,7 @@ jobs:
             echo " HOLA 2"
             echo ${{ secrets.DB_PORT }}
             echo " HOLA 3"
-            
+            echo $DB_PASSWORD
             echo "Hola  4"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
