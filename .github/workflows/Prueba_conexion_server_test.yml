@@ -30,6 +30,9 @@ jobs:
           script: |
             pwd 
             echo "prueba de conexion servidor 10.34.8.95"
+            echo ${{secrets.SID}}
+            echo " HOLA 2"
+            echo ${{ secrets.SID }}
             ls -lrt
             echo "Hola  ...      "
             echo "Prueba conexion desde la organizacion ADSA ..."
