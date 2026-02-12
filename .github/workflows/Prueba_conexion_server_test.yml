@@ -1,4 +1,4 @@
-name: Prueba de conexion al servidor 
+ioname: Prueba de conexion al servidor 
 on:
   #### push: cambio de automatico a manual
   workflow_dispatch:
@@ -37,10 +37,10 @@ jobs:
           script: |
             pwd 
             echo "prueba de conexion servidor 10.34.8.95"
-            echo " HOLA 1"
+            echo " HOLA sin espacio"
             echo ${{secrets.DB_SID}}
-            echo " HOLA 2"
-            echo ${{secrets.DB_PORT}}
+            echo " HOLA con espacio"
+            echo ${{ secrets.DB_PORT }}
             echo " HOLA 3"
             echo $DB_PASSWORD
             echo " HOLA 4"
