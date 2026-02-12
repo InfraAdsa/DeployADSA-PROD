@@ -1,4 +1,4 @@
-ioname: Prueba de conexion al servidor 
+name: Prueba de conexion al servidor 
 on:
   #### push: cambio de automatico a manual
   workflow_dispatch:
