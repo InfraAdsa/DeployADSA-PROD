@@ -30,11 +30,13 @@ jobs:
           script: |
             pwd 
             echo "prueba de conexion servidor 10.34.8.95"
+            echo " HOLA 1"
             echo ${{secrets.SID}}
             echo " HOLA 2"
             echo ${{ secrets.SID }}
+            echo " HOLA 3"
             ls -lrt
-            echo "Hola  ...      "
+            echo "Hola  4"
             echo "Prueba conexion desde la organizacion ADSA ..."
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               docker ps -a
