@@ -16,8 +16,9 @@ jobs:
       - name: Añadir clave SSH al agente
         uses: webfactory/ssh-agent@v0.4.1
         with:
-          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Usa el nombre del secreto que creaste
-
+          ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Usa el nombre del secreto que creaste   
+      - name: mi secreto
+        run: echo ${{ secrets.SID }}
       - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
         with:
