@@ -1,71 +1,63 @@
-name: BCM_Service_Deploy_PRD_SRV_95
+name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc ---
 on:
   workflow_dispatch:
-  
-  #branches: - main
-  
-concurrency:
-     group: deploy-prd-95
-     cancel-in-progress: false
-
+    branches:
+      - main # Aqui va la rama
 jobs:
-  deploy: 
+  deploy:
     runs-on: [self-hosted, linux]
-    timeout-minutes: 30
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Copiar código
+        uses: actions/checkout@v3
 
-      - name: Deploy vía SSH
+      - name: Añadir clave SSH al agente
+        uses: webfactory/ssh-agent@v0.4.1
+        with:
+         ssh-private-key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
+
+      - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOSTNAME_95 }}
-          username: ${{ secrets.SSH_USERNAME_95 }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+          host: ${{secrets.HOSTNAME_95}} 	# Nombre de host
+          username: ${{secrets.SSH_USERNAME_95}} # nombre de usuario
+          key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
           script: |
-            set -e
-
-            echo "===== INICIO DEPLOY PRD 95 ====="
-
-            APP_PATH="/adsaenv/adsa/app/adsaweb"
-            APP_NAME="sa-bcm-event-consumer-svc"
-            CONTAINER_NAME="bcm-event-consumer-app"
-            IMAGE_NAME="bcm-event-consumer"
-
-            cd $APP_PATH
-
-            echo "===== Backup ====="
-            if [ -d "$APP_NAME" ]; then
-              mv $APP_NAME ${APP_NAME}_$(date +'%Y%m%d-%H%M')
-            fi
-
-            echo "===== Clonar repositorio ====="
-            git clone -b main https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
-
-            cd $APP_NAME
-
-            echo "===== Detener contenedor si existe ====="
-            docker rm -f $CONTAINER_NAME || true
-
-            echo "===== Eliminar imagen anterior ====="
-            docker rmi $IMAGE_NAME || true
-
-            echo "===== Build imagen ====="
-            docker build --pull -t $IMAGE_NAME .
-
-            echo "===== Run contenedor ====="
-            docker run -d \
-              -p 8188:8088 \
-              -e SPRING_PROFILES_ACTIVE=PROD \
-              --restart unless-stopped \
-              --name $CONTAINER_NAME \
-              $IMAGE_NAME
-
-              echo "===== Estado contenedores ====="
-              docker ps -a
-
-              echo "===== Logs iniciales ====="
-              docker logs --tail 50 $CONTAINER_NAME
-
-              echo "===== FIN DEPLOY ====="
+            echo "### path servidor 95 ###"
+            cd /adsaenv/adsa/app/adsaweb
+            pwd
+            ls -lrt 
+            echo "###  respaldo del repositorio del servidor sa-bcm-event-consumer-svc ###"
+            mv sa-bcm-event-consumer-svc /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
+            ls -lrt 
+            echo '### Clonar el repositorio sa-bcm-event-consumer-svc ###'
+            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            echo '### Repositorio clonado sa-bcm-event-consumer-svc ###' 
+            ls -lrt
+            sleep 20
+            echo '### Detener y eliminar el Contenedor  bcm-event-consumer-app ###'
+            docker ps
+            docker stop  bcm-event-consumer-app
+            sleep 20
+            docker rm  bcm-event-consumer-app
+            echo '### eliminimar la imagen  bcm-event-consumer-app ###'
+            docker images
+            sleep 20
+            docker rmi  bcm-event-consumer
+            docker images
+            echo '### Ejecutar el build y el deploy ###'
+            cd /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc
+            ls -lrt
+            docker build -t bcm-event-consumer .
+            sleep 40
+            docker run -d -p  8188:8088 -e SPRING_PROFILES_ACTIVE=PROD --name bcm-event-consumer-app bcm-event-consumer
+            sleep 20
+            echo '### contenedores corriendo  bcm-event-consumer-app ###'
+            docker ps -a
+            echo '###### Enviar correo ######'
+            cd /adsaenv/adsa/app/adsaweb
+            docker ps -a > deploy.txt
+            echo >> deploy.txt; echo '##### Logs del contenedor Productivo bcm-event-consumer-app #####' >> deploy.txt; echo >> deploy.txt
+            docker logs bcm-event-consumer-app >> deploy.txt
+            mail -s "Deploy realizado proyecto PRD  bcm-event-consumer-app" joseantonio.lopez@seccionamarilla.com < deploy.txt
+            echo '###### fin del workflow ######'
