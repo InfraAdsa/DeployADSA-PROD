@@ -26,7 +26,7 @@ jobs:
 
             echo "=== INICIANDO DEPLOY ==="
 
-            cd /adsaenv/adsa/app/adsaweb+ 
+            cd /adsaenv/adsa/app/adsaweb
 
             # Backup si existe
             if [ -d sa-bcm-event-consumer-svc ]; then
