@@ -64,9 +64,9 @@ jobs:
             docker run -d \
               --env-file .env \
               -p 8188:8088 \
-              --name $APP_NAME \
+              --name bcm-event-consumer-app \
               --restart unless-stopped \
-              $IMAGE_NAME
+              bcm-event-consumer
 
             echo "Verificando contenedor..."
             docker ps
