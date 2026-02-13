@@ -1,0 +1,77 @@
+name: Deploy BCM Service PRD - SRV95
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+
+    env:
+      APP_NAME: bcm-event-consumer-app
+      IMAGE_NAME: bcm-event-consumer
+      BASE_PATH: /adsaenv/adsa/app/adsaweb
+      REPO_NAME: sa-bcm-event-consumer-svc
+      BRANCH: main
+
+    steps:
+      - name: Deploy remoto en servidor
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTNAME_95 }}
+          username: ${{ secrets.SSH_USERNAME_95 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+          script: |
+            set -e
+
+            echo "=== INICIANDO DEPLOY ==="
+
+            cd /adsaenv/adsa/app/adsaweb
+
+            # Backup si existe
+            if [ -d sa-bcm-event-consumer-svc ]; then
+              echo "Creando respaldo..."
+              mv sa-bcm-event-consumer-svc sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
+            fi
+
+            echo "Clonando repositorio..."
+            #git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+
+            cd sa-bcm-event-consumer-svc
+
+            echo "Deteniendo contenedor si existe..."
+            docker stop bcm-event-consumer-app 2>/dev/null || true
+            docker rm bcm-event-consumer-app 2>/dev/null || true
+
+            echo "Eliminando imagen anterior..."
+            docker rmi bcm-event-consumer 2>/dev/null || true
+
+            echo "Construyendo imagen Docker..."
+            docker build -t bcm-event-consumer .
+
+            echo "Creando archivo .env temporal..."
+            cat <<EOF > .env
+              DB_SERVER=${{secrets.DB_SERVER}}
+              DB_PORT=${{secrets.DB_PORT}}
+              DB_SID=${{secrets.DB_SID}}
+              DB_USER=${{secrets.DB_USER}}
+              DB_PASS=${{secrets.DB_PASS}}
+              SPRING_PROFILES_ACTIVE=PROD
+            EOF
+
+            echo "Levantando contenedor..."
+            docker run -d \
+              --env-file .env \
+              -p 8188:8088 \
+              --name bcm-event-consumer-app \
+              --restart unless-stopped \
+              bcm-event-consumer
+
+            echo "Verificando contenedor..."
+            docker ps -a
+
+            echo "Eliminando archivo .env por seguridad..."
+            rm -f .env
+
+            echo "=== DEPLOY FINALIZADO ==="
