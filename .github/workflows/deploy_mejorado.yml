@@ -2,8 +2,6 @@ name: Deploy BCM Service PRD - SRV95
 
 on:
   workflow_dispatch:
-    branches:
-      - main
 
 jobs:
   deploy:
@@ -53,13 +51,13 @@ jobs:
 
             echo "Creando archivo .env temporal..."
             cat <<EOF > .env
-DB_SERVER=${{ secrets.DB_SERVER }}
-DB_PORT=${{ secrets.DB_PORT }}
-DB_SID=${{ secrets.DB_SID }}
-DB_USER=${{ secrets.DB_USER }}
-DB_PASS=${{ secrets.DB_PASS }}
-SPRING_PROFILES_ACTIVE=PROD
-EOF
+              DB_SERVER=${{ secrets.DB_SERVER }}
+              DB_PORT=${{ secrets.DB_PORT }}
+              DB_SID=${{ secrets.DB_SID }}
+              DB_USER=${{ secrets.DB_USER }}
+              DB_PASS=${{ secrets.DB_PASS }}
+              SPRING_PROFILES_ACTIVE=PROD
+               EOF
 
             echo "Levantando contenedor..."
             docker run -d \
