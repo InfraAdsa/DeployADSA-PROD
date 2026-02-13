@@ -49,7 +49,7 @@ jobs:
            echo "Levantando contenedor..."
            docker run -d \
              -p 5102:8080 \
-             -e ASPNETCORE_ENVIRONMENT=Production
+             -e ASPNETCORE_ENVIRONMENT=Production \
              -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
              --name wfm-event-ingestor-app \
              --restart unless-stopped \
