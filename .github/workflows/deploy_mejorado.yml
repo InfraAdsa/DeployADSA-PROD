@@ -52,11 +52,11 @@ jobs:
 
             echo "Creando archivo .env temporal..."
             cat <<EOF > .env
-              DB_SERVER=${{ secrets.DB_SERVER }}
-              DB_PORT=${{ secrets.DB_PORT }}
-              DB_SID=${{ secrets.DB_SID }}
-              DB_USER=${{ secrets.DB_USER }}
-              DB_PASS=${{ secrets.DB_PASS }}
+              DB_SERVER=${{secrets.DB_SERVER}}
+              DB_PORT=${{secrets.DB_PORT}}
+              DB_SID=${{secrets.DB_SID}}
+              DB_USER=${{secrets.DB_USER}}
+              DB_PASS=${{secrets.DB_PASS}}
               SPRING_PROFILES_ACTIVE=PROD
             EOF
 
