@@ -1,17 +1,16 @@
-name: Deploy BCM Service PRD - SRV95
-
+name: BCM_Front_SRV_95 --- sa-bcm-wfmforms-ui ---
 on:
   workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
-
-    env:
-      APP_NAME: bcm-event-consumer-app
-      IMAGE_NAME: bcm-event-consumer
+    
+     env:
+      APP_NAME: bcm-wfmforms-ui-app
+      IMAGE_NAME: bcm-wfmforms-ui
       BASE_PATH: /adsaenv/adsa/app/adsaweb
-      REPO_NAME: sa-bcm-event-consumer-svc
+      REPO_NAME: sa-bcm-wfmforms-ui
       BRANCH: main
 
     steps:
@@ -22,52 +21,51 @@ jobs:
           username: ${{ secrets.SSH_USERNAME_95 }}
           key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
           script: |
-            set -e
-
-            echo "=== INICIANDO DEPLOY ==="
+            set -e   
+    
+              echo "=== INICIANDO DEPLOY ==="
 
             cd /adsaenv/adsa/app/adsaweb
 
             # Backup si existe
-            if [ -d sa-bcm-event-consumer-svc ]; then
+            if [ -d sa-bcm-wfmforms-ui ]; then
               echo "Creando respaldo..."
-              mv sa-bcm-event-consumer-svc sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
+              mv sa-bcm-wfmforms-ui sa-bcm-wfmforms-ui_$(date +'%Y%m%d-%H%M')
             fi
 
             echo "Clonando repositorio..."
-            #git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
-            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
 
-            cd sa-bcm-event-consumer-svc
-
+            cd sa-bcm-wfmforms-ui 
+    
             echo "Deteniendo contenedor si existe..."
-            docker stop bcm-event-consumer-app 2>/dev/null || true
-            docker rm bcm-event-consumer-app 2>/dev/null || true
-
+            docker stop bcm-wfmforms-ui-app 2>/dev/null || true
+            docker rm bcm-wfmforms-ui-app 2>/dev/null || true
+    
             echo "Eliminando imagen anterior..."
-            docker rmi bcm-event-consumer 2>/dev/null || true
-
-            echo "Construyendo imagen Docker..."
-            docker build -t bcm-event-consumer .
-
-            echo "Creando archivo .env temporal..."
-            cat <<EOF > .env
-              DB_SERVER=${{secrets.DB_SERVER}}
-              DB_PORT=${{secrets.DB_PORT}}
-              DB_SID=${{secrets.DB_SID}}
-              DB_USER=${{secrets.DB_USER}}
-              DB_PASS=${{secrets.DB_PASS}}
-              SPRING_PROFILES_ACTIVE=PROD
+            docker rmi bcm-wfmforms-ui 2>/dev/null || true
+    
+             echo "Construyendo imagen Docker..."
+             docker build -t bcm-wfmforms-ui .
+    
+                echo "Creando archivo .env temporal..."
+                cat <<EOF > .env
+                  DB_SERVER=${{secrets.DB_SERVER}}
+                  DB_PORT=${{secrets.DB_PORT}}
+                  DB_SID=${{secrets.DB_SID}}
+                  DB_USER=${{secrets.DB_USER}}
+                  DB_PASS=${{secrets.DB_PASS}}
+                  ASPNETCORE_ENVIRONMENT=PROD
             EOF
-
-            echo "Levantando contenedor..."
-            docker run -d \
+    
+             echo "Levantando contenedor..."
+             docker run -d \
               --env-file .env \
               -p 8188:8088 \
               -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
-              --name bcm-event-consumer-app \
+              --name bcm-wfmforms-ui-app \
               --restart unless-stopped \
-              bcm-event-consumer
+              bcm-wfmforms-ui
 
             echo "Verificando contenedor..."
             docker ps -a
@@ -75,4 +73,6 @@ jobs:
             echo "Eliminando archivo .env por seguridad..."
             rm -f .env
 
-            echo "=== DEPLOY FINALIZADO ==="
+            echo "=== DEPLOY FINALIZADO ==="   
+    
+    
