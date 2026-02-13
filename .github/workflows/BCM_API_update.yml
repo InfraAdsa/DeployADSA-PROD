@@ -57,13 +57,13 @@ jobs:
              DB_SID=${{secrets.DB_SID}}
              DB_USER=${{secrets.DB_USER}}
              DB_PASS=${{secrets.DB_PASS}}
-             SPRING_PROFILES_ACTIVE=PROD
+             ASPNETCORE_ENVIRONMENT=PROD
            EOF
 
            echo "Levantando contenedor..."
            docker run -d \
              --env-file .env \
-             -p 8188:8088 \
+             -p 4400:8080 \
              -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
              --name bcm-api-app \
              --restart unless-stopped \
