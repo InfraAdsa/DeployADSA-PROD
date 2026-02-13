@@ -35,7 +35,8 @@ jobs:
             fi
 
             echo "Clonando repositorio..."
-            git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            #git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
 
             cd sa-bcm-event-consumer-svc
 
