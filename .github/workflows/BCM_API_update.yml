@@ -41,11 +41,11 @@ jobs:
            cd sa-bcm-content-api
 
            echo "Deteniendo contenedor si existe..."
-           docker stop bcm-api-container 2>/dev/null || true
-           docker rm bcm-api-container 2>/dev/null || true
+           #docker stop bcm-api-container 2>/dev/null || true
+           #docker rm bcm-api-container 2>/dev/null || true
 
            echo "Eliminando imagen anterior..."
-           docker rmi bcm-api-app 2>/dev/null || true
+           #docker rmi bcm-api-app 2>/dev/null || true
 
            echo "Construyendo imagen Docker..."
            docker build -t bcm-content-api .
@@ -67,7 +67,7 @@ jobs:
              -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
              --name bcm-api-app \
              --restart unless-stopped \
-             sa-bcm--api
+             bcm-content-api
 
            echo "Verificando contenedor..."
            docker ps -a
