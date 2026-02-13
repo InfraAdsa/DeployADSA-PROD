@@ -31,7 +31,8 @@ jobs:
             mv sa-bcm-event-consumer-svc /adsaenv/adsa/app/adsaweb/sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
             ls -lrt 
             echo '### Clonar el repositorio sa-bcm-event-consumer-svc ###'
-            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            ## git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+            git clone -b main git@github.com:joseantonio-lpz/sa-bcm-event-consumer-svc.git
             echo '### Repositorio clonado sa-bcm-event-consumer-svc ###' 
             ls -lrt
             sleep 20
