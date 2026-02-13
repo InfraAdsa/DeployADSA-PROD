@@ -11,7 +11,7 @@ jobs:
       APP_NAME: bcm-api-app
       IMAGE_NAME: bcm-content-api
       BASE_PATH: /adsaenv/adsa/app/adsaweb
-      REPO_NAME: sa-bcm-content-api
+      REPO_NAME: sa-bcm-api
       BRANCH: main
 
     steps:
@@ -67,7 +67,7 @@ jobs:
              -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
              --name bcm-api-app \
              --restart unless-stopped \
-             bcm-content-api
+             sa-bcm--api
 
            echo "Verificando contenedor..."
            docker ps -a
