@@ -6,13 +6,13 @@ jobs:
   deploy:
     runs-on: [self-hosted, linux]
     
-     env:
-      APP_NAME: bcm-wfmforms-ui-app
-      IMAGE_NAME: bcm-wfmforms-ui
-      BASE_PATH: /adsaenv/adsa/app/adsaweb
-      REPO_NAME: sa-bcm-wfmforms-ui
-      BRANCH: main
-
+    env:
+     APP_NAME: bcm-wfmforms-ui-app
+     IMAGE_NAME: bcm-wfmforms-ui
+     BASE_PATH: /adsaenv/adsa/app/adsaweb
+     REPO_NAME: sa-bcm-wfmforms-ui
+     BRANCH: main
+     
     steps:
       - name: Deploy remoto en servidor
         uses: appleboy/ssh-action@master
