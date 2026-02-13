@@ -56,7 +56,7 @@ jobs:
                   DB_USER=${{secrets.DB_USER}}
                   DB_PASS=${{secrets.DB_PASS}}
                   ASPNETCORE_ENVIRONMENT=PROD
-            EOF
+             EOF
     
              echo "Levantando contenedor..."
              docker run -d \
