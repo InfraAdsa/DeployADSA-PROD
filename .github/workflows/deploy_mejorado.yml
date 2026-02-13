@@ -58,7 +58,7 @@ jobs:
               DB_USER=${{ secrets.DB_USER }}
               DB_PASS=${{ secrets.DB_PASS }}
               SPRING_PROFILES_ACTIVE=PROD
-               EOF
+              EOF
 
             echo "Levantando contenedor..."
             docker run -d \
@@ -69,7 +69,7 @@ jobs:
               bcm-event-consumer
 
             echo "Verificando contenedor..."
-            docker ps
+            docker ps -a
 
             echo "Eliminando archivo .env por seguridad..."
             rm -f .env
