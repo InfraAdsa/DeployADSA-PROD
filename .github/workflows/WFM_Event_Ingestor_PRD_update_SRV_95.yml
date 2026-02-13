@@ -1,8 +1,6 @@
 name: WFM_Event_Ingestor__update_PRD_SRV_95 --- sa-wfm-event-ingestor-svc ---
-
 on:
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
