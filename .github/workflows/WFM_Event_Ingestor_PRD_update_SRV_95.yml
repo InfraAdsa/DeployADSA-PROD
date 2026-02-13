@@ -35,7 +35,6 @@ jobs:
            fi
 
            echo "Clonando repositorio..."
-           #git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
            git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git
            cd sa-wfm-event-ingestor-svc
 
@@ -58,7 +57,7 @@ jobs:
              --restart unless-stopped \
              wfm-event-ingestor
 
-           echo "Verificando contenedor..."
+           echo "Verificando contenedor $APP_NAME..."
            docker ps -a
 
            #echo "Eliminando archivo .env por seguridad..."
