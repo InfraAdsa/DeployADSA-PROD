@@ -37,11 +37,11 @@ jobs:
            cd sa-wfm-event-ingestor-svc
 
            echo "Deteniendo contenedor si existe..."
-           #docker stop wfm-event-ingestor-app 2>/dev/null || true
-           #docker rm wfm-event-ingestor-app 2>/dev/null || true
+           docker stop wfm-event-ingestor-app 2>/dev/null || true
+           docker rm wfm-event-ingestor-app 2>/dev/null || true
 
            echo "Eliminando imagen anterior..."
-           #docker rmi wfm-event-ingestor 2>/dev/null || true
+           docker rmi wfm-event-ingestor 2>/dev/null || true
 
            echo "Construyendo imagen Docker..."
            docker build -t wfm-event-ingestor .
