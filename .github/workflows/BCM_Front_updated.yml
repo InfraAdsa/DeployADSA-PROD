@@ -11,7 +11,7 @@ jobs:
      IMAGE_NAME: bcm-wfmforms-ui
      BASE_PATH: /adsaenv/adsa/app/adsaweb
      REPO_NAME: sa-bcm-wfmforms-ui
-     BRANCH: main
+     ###BRANCH: main
      
     steps:
       - name: Deploy remoto en servidor
@@ -36,7 +36,7 @@ jobs:
             echo "Clonando repositorio..."
             git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
 
-            cd sa-bcm-wfmforms-ui 
+            cd /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui 
     
             echo "Deteniendo contenedor si existe..."
             docker stop bcm-wfmforms-ui-app 2>/dev/null || true
@@ -61,7 +61,7 @@ jobs:
              echo "Levantando contenedor..."
              docker run -d \
               --env-file .env \
-              -p 8188:8088 \
+              -p 5103:8080 \
               -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
               --name bcm-wfmforms-ui-app \
               --restart unless-stopped \
