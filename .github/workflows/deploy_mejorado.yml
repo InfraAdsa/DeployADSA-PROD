@@ -1,0 +1,78 @@
+name: Deploy BCM Service PRD - SRV95
+
+on:
+  workflow_dispatch:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+
+    env:
+      APP_NAME: bcm-event-consumer-app
+      IMAGE_NAME: bcm-event-consumer
+      BASE_PATH: /adsaenv/adsa/app/adsaweb
+      REPO_NAME: sa-bcm-event-consumer-svc
+      BRANCH: main
+
+    steps:
+      - name: Deploy remoto en servidor
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.HOSTNAME_95 }}
+          username: ${{ secrets.SSH_USERNAME_95 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+          script: |
+            set -e
+
+            echo "=== INICIANDO DEPLOY ==="
+
+            cd $BASE_PATH
+
+            # Backup si existe
+            if [ -d "$REPO_NAME" ]; then
+              echo "Creando respaldo..."
+              mv $REPO_NAME ${REPO_NAME}_$(date +'%Y%m%d-%H%M')
+            fi
+
+            echo "Clonando repositorio..."
+            git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/$REPO_NAME.git
+
+            cd $REPO_NAME
+
+            echo "Deteniendo contenedor si existe..."
+            docker stop $APP_NAME 2>/dev/null || true
+            docker rm $APP_NAME 2>/dev/null || true
+
+            echo "Eliminando imagen anterior..."
+            docker rmi $IMAGE_NAME 2>/dev/null || true
+
+            echo "Construyendo imagen Docker..."
+            docker build -t $IMAGE_NAME .
+
+            echo "Creando archivo .env temporal..."
+            cat <<EOF > .env
+DB_SERVER=${{ secrets.DB_SERVER }}
+DB_PORT=${{ secrets.DB_PORT }}
+DB_SID=${{ secrets.DB_SID }}
+DB_USER=${{ secrets.DB_USER }}
+DB_PASS=${{ secrets.DB_PASS }}
+SPRING_PROFILES_ACTIVE=PROD
+EOF
+
+            echo "Levantando contenedor..."
+            docker run -d \
+              --env-file .env \
+              -p 8188:8088 \
+              --name $APP_NAME \
+              --restart unless-stopped \
+              $IMAGE_NAME
+
+            echo "Verificando contenedor..."
+            docker ps
+
+            echo "Eliminando archivo .env por seguridad..."
+            rm -f .env
+
+            echo "=== DEPLOY FINALIZADO ==="
