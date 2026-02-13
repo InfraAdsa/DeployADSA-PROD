@@ -1,1 +1,67 @@
+name: WFM_Event_Ingestor__update_PRD_SRV_95 --- sa-wfm-event-ingestor-svc ---
 
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+
+    env:
+      APP_NAME: wfm-event-ingestor-app
+      IMAGE_NAME: wfm-event-ingestor
+      BASE_PATH: /adsaenv/adsa/app/adsaweb
+      REPO_NAME: sa-wfm-event-ingestor-svc
+      BRANCH: main
+
+    steps:
+      - name: Deploy remoto en servidor
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOSTNAME_95 }}
+          username: ${{ secrets.SSH_USERNAME_95 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+          script: |
+           set -e
+
+           echo "=== INICIANDO DEPLOY ==="
+
+           cd /adsaenv/adsa/app/adsaweb
+
+           # Backup si existe
+           if [ -d  sa-wfm-event-ingestor-svc ]; then
+             echo "Creando respaldo..."
+             mv sa-wfm-event-ingestor-svc sa-wfm-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
+           fi
+
+           echo "Clonando repositorio..."
+           #git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+           git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git
+           cd sa-wfm-event-ingestor-svc
+
+           echo "Deteniendo contenedor si existe..."
+           #docker stop wfm-event-ingestor-app 2>/dev/null || true
+           #docker rm wfm-event-ingestor-app 2>/dev/null || true
+
+           echo "Eliminando imagen anterior..."
+           #docker rmi wfm-event-ingestor 2>/dev/null || true
+
+           echo "Construyendo imagen Docker..."
+           docker build -t wfm-event-ingestor .
+
+           echo "Levantando contenedor..."
+           docker run -d \
+             -p 5102:8080 \
+             -e ASPNETCORE_ENVIRONMENT=Production
+             -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
+             --name wfm-event-ingestor-app \
+             --restart unless-stopped \
+             wfm-event-ingestor
+
+           echo "Verificando contenedor..."
+           docker ps -a
+
+           #echo "Eliminando archivo .env por seguridad..."
+           #rm -f .env
+
+           echo "=== DEPLOY FINALIZADO ==="
