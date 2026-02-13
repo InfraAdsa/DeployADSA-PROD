@@ -29,25 +29,25 @@ jobs:
             cd $BASE_PATH
 
             # Backup si existe
-            if [ -d "$REPO_NAME" ]; then
+            if [ -d sa-bcm-event-consumer-svc ]; then
               echo "Creando respaldo..."
-              mv $REPO_NAME ${REPO_NAME}_$(date +'%Y%m%d-%H%M')
+              mv sa-bcm-event-consumer-svc sa-bcm-event-consumer-svc_$(date +'%Y%m%d-%H%M')
             fi
 
             echo "Clonando repositorio..."
-            git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/$REPO_NAME.git
+            git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
 
-            cd $REPO_NAME
+            cd sa-bcm-event-consumer-svc
 
             echo "Deteniendo contenedor si existe..."
-            docker stop $APP_NAME 2>/dev/null || true
-            docker rm $APP_NAME 2>/dev/null || true
+            docker stop bcm-event-consumer-app 2>/dev/null || true
+            docker rm bcm-event-consumer-app 2>/dev/null || true
 
             echo "Eliminando imagen anterior..."
-            docker rmi $IMAGE_NAME 2>/dev/null || true
+            docker rmi bcm-event-consumer 2>/dev/null || true
 
             echo "Construyendo imagen Docker..."
-            docker build -t $IMAGE_NAME .
+            docker build -t bcm-event-consumer .
 
             echo "Creando archivo .env temporal..."
             cat <<EOF > .env
