@@ -45,21 +45,21 @@ jobs:
             echo "Eliminando imagen anterior..."
             docker rmi bcm-wfmforms-ui 2>/dev/null || true
     
-             echo "Construyendo imagen Docker..."
-             docker build -t bcm-wfmforms-ui .
+            echo "Construyendo imagen Docker..."
+            docker build -t bcm-wfmforms-ui .
              
-             echo "Creando archivo .env temporal..."
-             cat <<EOF > .env
-               DB_SERVER=${{secrets.DB_SERVER}}
-               DB_PORT=${{secrets.DB_PORT}}
-               DB_SID=${{secrets.DB_SID}}
-               DB_USER=${{secrets.DB_USER}}
-               DB_PASS=${{secrets.DB_PASS}}
-               ASPNETCORE_ENVIRONMENT=PROD
-             EOF
+            echo "Creando archivo .env temporal..."
+            cat <<EOF > .env
+              DB_SERVER=${{secrets.DB_SERVER}}
+              DB_PORT=${{secrets.DB_PORT}}
+              DB_SID=${{secrets.DB_SID}}
+              DB_USER=${{secrets.DB_USER}}
+              DB_PASS=${{secrets.DB_PASS}}
+              ASPNETCORE_ENVIRONMENT=PROD
+            EOF
     
-             echo "Levantando contenedor..."
-             docker run -d \
+            echo "Levantando contenedor..."
+            docker run -d \
               --env-file .env \
               -p 5103:8080 \
               -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
@@ -67,11 +67,11 @@ jobs:
               --restart unless-stopped \
               bcm-wfmforms-ui
 
-             echo "Verificando contenedor..."
-             docker ps -a
+            echo "Verificando contenedor..."
+            docker ps -a
 
-             echo "Eliminando archivo .env por seguridad..."
-             rm -f .env
+            echo "Eliminando archivo .env por seguridad..."
+            rm -f .env
 
              echo "=== DEPLOY FINALIZADO ==="   
     
