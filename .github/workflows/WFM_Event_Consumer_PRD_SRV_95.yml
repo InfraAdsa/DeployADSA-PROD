@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy vía SSH
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOSTNAME_95 }}
           username: ${{ secrets.SSH_USERNAME_95 }}
