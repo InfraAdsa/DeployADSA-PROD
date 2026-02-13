@@ -1,60 +1,71 @@
-name: BCM_Service_Deploy_PRD_SRV_95 --- sa-bcm-event-consumer-svc
-
+name: BCM_Service_Deploy_PRD_SRV_95
 on:
-workflow_dispatch:
-       branches:
-        - main
-         
-jobs:
-  deploy:
-    runs-on: [self-hosted, linux]
-    steps:
-    - name: Deploy remoto
-     uses: appleboy/ssh-action@master
-     with:
-            host: ${{ secrets.HOSTNAME_95 }}
-            username: ${{ secrets.SSH_USERNAME_95 }}
-            key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
-            envs: DB_USER,DB_PASS,DB_SID,DB_HOST,DB_PORT
-            script: |
-              set -e
-              APP_NAME="bcm-event-consumer-app"
-              IMAGE_NAME="bcm-event-consumer"
-              BASE_PATH="/adsaenv/adsa/app/adsaweb"
-              REPO_NAME="sa-bcm-event-consumer-svc"
-              BRANCH="main"
-              
-              echo "=== Iniciando Deploy ==="
-              cd $BASE_PATH
-              # Backup si existe
-              if [ -d "$REPO_NAME" ]; then
-              echo "Creando respaldo..."
-              mv $REPO_NAME ${REPO_NAME}_$(date +'%Y%m%d-%H%M')
-              fi
-              cd $REPO_NAME
-    
-              docker stop bcm-event-consumer-app 2>/dev/null || true
-              docker rm bcm-event-consumer-app 2>/dev/null || true
-              
-              docker build -t bcm-event-consumer .
-              
-              docker run -d \
-              -p 8188:8088 \
-              --name bcm-event-consumer-app \
-              --restart unless-stopped \
-              -e DB_USER=$DB_USER \
-              -e DB_PASS=$DB_PASS \
-              -e DB_SID=$DB_SID \
-              -e DB_HOST=$DB_HOST \
-              -e DB_PORT=$DB_PORT \
-              -e SPRING_PROFILES_ACTIVE=PROD \
-              bcm-event-consumer
-              env:
-              DB_USER: ${{ secrets.DB_USER }}
-              DB_PASS: ${{ secrets.DB_PASS }}
-              DB_SID: ${{ secrets.DB_SID }}
-              DB_HOST: ${{ secrets.DB_HOST }}
-              DB_PORT: ${{ secrets.DB_PORT }}
-    
+  workflow_dispatch:
+  
+  branches: - main
+  
+  concurrency:
+     group: deploy-prd-95
+     cancel-in-progress: false
 
-    
+jobs:
+  deploy: 
+    runs-on: [self-hosted, linux]
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy vía SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOSTNAME_95 }}
+          username: ${{ secrets.SSH_USERNAME_95 }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+          script: |
+            set -e
+
+            echo "===== INICIO DEPLOY PRD 95 ====="
+
+            APP_PATH="/adsaenv/adsa/app/adsaweb"
+            APP_NAME="sa-bcm-event-consumer-svc"
+            CONTAINER_NAME="bcm-event-consumer-app"
+            IMAGE_NAME="bcm-event-consumer"
+
+            cd $APP_PATH
+
+            echo "===== Backup ====="
+            if [ -d "$APP_NAME" ]; then
+              mv $APP_NAME ${APP_NAME}_$(date +'%Y%m%d-%H%M')
+            fi
+
+            echo "===== Clonar repositorio ====="
+            git clone -b main https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
+
+            cd $APP_NAME
+
+            echo "===== Detener contenedor si existe ====="
+            docker rm -f $CONTAINER_NAME || true
+
+            echo "===== Eliminar imagen anterior ====="
+            docker rmi $IMAGE_NAME || true
+
+            echo "===== Build imagen ====="
+            docker build --pull -t $IMAGE_NAME .
+
+            echo "===== Run contenedor ====="
+            docker run -d \
+              -p 8188:8088 \
+              -e SPRING_PROFILES_ACTIVE=PROD \
+              --restart unless-stopped \
+              --name $CONTAINER_NAME \
+              $IMAGE_NAME
+
+              echo "===== Estado contenedores ====="
+              docker ps -a
+
+              echo "===== Logs iniciales ====="
+              docker logs --tail 50 $CONTAINER_NAME
+
+              echo "===== FIN DEPLOY ====="
