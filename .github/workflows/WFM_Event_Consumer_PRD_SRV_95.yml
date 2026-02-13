@@ -2,9 +2,9 @@ name: BCM_Service_Deploy_PRD_SRV_95
 on:
   workflow_dispatch:
   
-  branches: - main
+  #branches: - main
   
-  concurrency:
+concurrency:
      group: deploy-prd-95
      cancel-in-progress: false
 
