@@ -70,18 +70,28 @@ jobs:
            #  bcm-content-api
 
            echo "Levantando contenedor..."
+           
            docker run -d \
-           -e ASPNETCORE_ENVIRONMENT=PROD \
-           -e DB_SERVER=${{secrets.DB_SERVER}} \
-           -e DB_PORT=${{secrets.DB_PORT}} \
-           -e DB_SID=${{secrets.DB_SID}} \
-           -e DB_USER=${{secrets.DB_USER}} \
-           -e DB_PASS=${{secrets.DB_PASS}} \
-           -p 4400:8080 \
-           -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
-           --name bcm-api-app \
-           --restart unless-stopped \
-           bcm-content-api
+            -p 4400:8080 \
+            -e ASPNETCORE_ENVIRONMENT=PROD \
+            -e "ConnectionStrings__OracleDb=Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=${{ secrets.DB_SERVER }})(PORT=${{ secrets.DB_PORT }}))(CONNECT_DATA=(SID=${{ secrets.DB_SID }})));User Id=${{ secrets.DB_USER }};Password=${{ secrets.DB_PASS }};Enlist=false;Pooling=true" \
+            -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
+            --name bcm-api-app \
+            --restart unless-stopped \
+            bcm-content-api
+
+           #docker run -d \
+           #-e ASPNETCORE_ENVIRONMENT=PROD \
+           #-e DB_SERVER=${{secrets.DB_SERVER}} \
+           #-e DB_PORT=${{secrets.DB_PORT}} \
+           #-e DB_SID=${{secrets.DB_SID}} \
+           #-e DB_USER=${{secrets.DB_USER}} \
+           #-e DB_PASS=${{secrets.DB_PASS}} \
+           #-p 4400:8080 \
+           #-v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
+           #--name bcm-api-app \
+           #--restart unless-stopped \
+           #bcm-content-api
            
            echo "Verificando contenedor..."
            docker ps -a
