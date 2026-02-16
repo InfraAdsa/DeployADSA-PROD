@@ -92,11 +92,12 @@ jobs:
            #--name bcm-api-app \
            #--restart unless-stopped \
            #bcm-content-api
-           
-           echo "Verificando contenedor..."
+
+           sleep 10
+           echo "Verificando contenedor...:)"
            docker ps -a
 
            echo "Eliminando archivo .env por seguridad..."
            rm -f .env
-           echo "fin del workflow"
+           echo "fin del workflow :)"
            echo "=== DEPLOY FINALIZADO ==="
