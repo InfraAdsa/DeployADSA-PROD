@@ -98,5 +98,5 @@ jobs:
 
            echo "Eliminando archivo .env por seguridad..."
            rm -f .env
-
+           echo "fin del workflow"
            echo "=== DEPLOY FINALIZADO ==="
