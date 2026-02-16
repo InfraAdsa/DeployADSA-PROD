@@ -69,7 +69,7 @@ jobs:
              --restart unless-stopped \
              bcm-content-api
 
-           echo "Levantando contenedor..."
+           # echo "Levantando contenedor..."
            
            # docker run -d \
            # -p 4400:8080 \
