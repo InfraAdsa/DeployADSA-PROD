@@ -59,6 +59,6 @@ jobs:
            docker ps -a
 
            #echo "Eliminando archivo .env por seguridad..."
-           #rm -f .env
+           rm -f .env
 
            echo "=== DEPLOY FINALIZADO ==="
