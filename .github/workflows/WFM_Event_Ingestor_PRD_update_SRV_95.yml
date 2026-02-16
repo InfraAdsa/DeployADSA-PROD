@@ -58,7 +58,7 @@ jobs:
            echo "Verificando contenedor $APP_NAME..."
            docker ps -a
 
-           #echo "Eliminando archivo .env por seguridad..."
+           echo "Eliminando archivo .env por seguridad..."
            rm -f .env
 
            echo "=== DEPLOY FINALIZADO ==="
