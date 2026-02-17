@@ -35,6 +35,9 @@ jobs:
      
       - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
+        env:
+          REPO_NAME2: sa-bcm-api :)
+
         with:
           host: ${{secrets.HOSTNAME_95}} # Tu nombre de host
           username: ${{secrets.SSH_USERNAME_95}} # Tu nombre de usuario
@@ -53,8 +56,8 @@ jobs:
             echo "Hola  5"
             echo "" fin""
             echo "path: $BASE_PATH "
-
-            
+            echo "Repo name: $REPO_NAME"
+            echo "Repo name: $REPO_NAME2"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
