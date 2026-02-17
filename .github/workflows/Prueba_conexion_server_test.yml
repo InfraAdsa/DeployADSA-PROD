@@ -68,7 +68,7 @@ jobs:
             echo "path: $BASE_PATH "
             echo "Repo name: $REPO_NAME"
             echo "Repo name: $REPO_NAME2"
-            echo "$ASPNETCORE_ENVIR"
+            echo " PATH : $BASE_PATH"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
