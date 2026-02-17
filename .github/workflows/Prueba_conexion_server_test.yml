@@ -14,6 +14,11 @@ jobs:
         DB_PORT: ${{secrets.DB_PORT}}
         DB_USER: ${{secrets.DB_USER}}
         DB_PASSWORD: ${{secrets.DB_PASS}}
+        APP_NAME: bcm-api-app
+        IMAGE_NAME: bcm-content-api
+        BASE_PATH: "/adsaenv/adsa/app/adsaweb"
+        REPO_NAME: sa-bcm-api
+        BRANCH: main
         
     steps:
       - name: Copiar código
@@ -47,6 +52,9 @@ jobs:
             echo '$DB_USER'
             echo "Hola  5"
             echo "" fin""
+            echo "path: $BASE_PATH "
+
+            
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
