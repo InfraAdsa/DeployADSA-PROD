@@ -16,7 +16,6 @@ jobs:
         DB_PASSWORD: ${{secrets.DB_PASS}}
         APP_NAME: bcm-api-app
         IMAGE_NAME: bcm-content-api
-        BASE_PATH: "/adsaenv/adsa/app/adsaweb"
         REPO_NAME: sa-bcm-api
         BRANCH: main
         
@@ -44,6 +43,7 @@ jobs:
           key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
           script: |
             pwd
+            export BASE_PATH=/adsaenv/adsa/app/adsaweb
             echo "Creando archivo .env temporal..."
             cat <<EOF > .env
              DB_SERVER=${{secrets.DB_SERVER}}
@@ -68,7 +68,7 @@ jobs:
             echo "path: $BASE_PATH "
             echo "Repo name: $REPO_NAME"
             echo "Repo name: $REPO_NAME2"
-            echo " PATH : $ASPNETCORE_ENVIR"
+            echo " Path : $BASE_PATH"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
