@@ -44,6 +44,10 @@ jobs:
           script: |
             pwd
             export BASE_PATH=/adsaenv/adsa/app/adsaweb
+            export BASE_BIN=/adsaenv/adsa/app/adsaweb/bin
+            ./adminEnv.sh
+            
+            
             echo "Creando archivo .env temporal..."
             cat <<EOF > .env
              DB_SERVER=${{secrets.DB_SERVER}}
@@ -69,6 +73,8 @@ jobs:
             echo "Repo name: $REPO_NAME"
             echo "Repo name: $REPO_NAME2"
             echo " Path : $BASE_PATH"
+            echo "rama:  $BRACH"
+            echo "imagen: $IMAGE_NAME"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
