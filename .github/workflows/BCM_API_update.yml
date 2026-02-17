@@ -27,7 +27,8 @@ jobs:
            echo "=== INICIANDO DEPLOY ==="
 
            cd /adsaenv/adsa/app/adsaweb
-
+           echo $BASE_PATH
+           
            # Backup si existe
            if [ -d  sa-bcm-content-api ]; then
              echo "Creando respaldo..."
@@ -35,7 +36,6 @@ jobs:
            fi
 
            echo "Clonando repositorio..."
-           #git clone -b $BRANCH https://${{ secrets.GH_ACCESS_KEY_JALS }}@github.com/joseantonio-lpz/sa-bcm-event-consumer-svc.git
            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-content-api.git
 
            cd sa-bcm-content-api
@@ -69,31 +69,6 @@ jobs:
              --restart unless-stopped \
              bcm-content-api
 
-           # echo "Levantando contenedor..."
-           
-           # docker run -d \
-           # -p 4400:8080 \
-           # -e ASPNETCORE_ENVIRONMENT=PROD \
-           # -e "ConnectionStrings__OracleDb=Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=${{ secrets.DB_SERVER }})(PORT=${{ secrets.DB_PORT }}))(CONNECT_DATA=(SID=${{ secrets.DB_SID }})));User Id=${{ secrets.DB_USER }};Password=${{ secrets.DB_PASS }};Enlist=false;Pooling=true" \
-           # -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
-           # --name bcm-api-app \
-           # --restart unless-stopped \
-           # bcm-content-api
-
-           #docker run -d \
-           #-e ASPNETCORE_ENVIRONMENT=PROD \
-           #-e DB_SERVER=${{secrets.DB_SERVER}} \
-           #-e DB_PORT=${{secrets.DB_PORT}} \
-           #-e DB_SID=${{secrets.DB_SID}} \
-           #-e DB_USER=${{secrets.DB_USER}} \
-           #-e DB_PASS=${{secrets.DB_PASS}} \
-           #-p 4400:8080 \
-           #-v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
-           #--name bcm-api-app \
-           #--restart unless-stopped \
-           #bcm-content-api
-
-           sleep 10
            echo "Verificando contenedor...:)"
            docker ps -a
 
