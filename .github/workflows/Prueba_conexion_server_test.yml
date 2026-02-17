@@ -45,7 +45,7 @@ jobs:
             pwd
             export BASE_PATH=/adsaenv/adsa/app/adsaweb
             export BASE_BIN=/adsaenv/adsa/app/adsaweb/bin
-            $BASE_BIN\./adminEnv.sh
+            $BASE_BIN/adminEnv.sh
             
             
             echo "Creando archivo .env temporal..."
