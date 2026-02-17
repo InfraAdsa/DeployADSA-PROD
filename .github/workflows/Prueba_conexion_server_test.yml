@@ -36,14 +36,24 @@ jobs:
       - name: Conectar y ejecutar comandos en el servidor
         uses: appleboy/ssh-action@master
         env:
-          REPO_NAME2: sa-bcm-api :)
+          REPO_NAME2: "sa-bcm-api"
 
         with:
           host: ${{secrets.HOSTNAME_95}} # Tu nombre de host
           username: ${{secrets.SSH_USERNAME_95}} # Tu nombre de usuario
           key: ${{secrets.SSH_PRIVATE_KEY_95}} # Clave privada
           script: |
-            pwd 
+            pwd
+            echo "Creando archivo .env temporal..."
+            cat <<EOF > .env
+             DB_SERVER=${{secrets.DB_SERVER}}
+             DB_PORT=${{secrets.DB_PORT}}
+             DB_SID=${{secrets.DB_SID}}
+             DB_USER=${{secrets.DB_USER}}
+             DB_PASS=${{secrets.DB_PASS}}
+             ASPNETCORE_ENVIR=PROD
+            EOF
+
             echo "prueba de conexion servidor 10.34.8.95"
             echo " HOLA sin espacio"
             echo ${{secrets.DB_SID}}
@@ -58,6 +68,7 @@ jobs:
             echo "path: $BASE_PATH "
             echo "Repo name: $REPO_NAME"
             echo "Repo name: $REPO_NAME2"
+            echo "$ASPNETCORE_ENVIR"
             # Puedes agregar aquí otros comandos, como npm install, composer install, etc.
               sleep 20
            
