@@ -22,7 +22,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME_95 }}
           key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
           script: |
-           #set -e
+           set -e
 
            echo "=== INICIANDO DEPLOY ==="
 
