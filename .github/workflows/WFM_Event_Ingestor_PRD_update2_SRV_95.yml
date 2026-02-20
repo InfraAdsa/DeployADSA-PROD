@@ -47,7 +47,7 @@ jobs:
            pwd
 
            #echo "Deteniendo contenedor si existe..."
-           #docker stop wfm-event-ingestor-app 2>/dev/null || true
+           docker stop $APP_NAME 2>/dev/null || true
            #docker rm wfm-event-ingestor-app 2>/dev/null || true
 
            #echo "Eliminando imagen anterior..."
