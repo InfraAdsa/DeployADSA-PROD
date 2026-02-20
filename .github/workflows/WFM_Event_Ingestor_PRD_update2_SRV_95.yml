@@ -40,7 +40,7 @@ jobs:
            fi
 
            echo "Clonando repositorio..."
-           git clone -b $BRANCH https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git
+           #git clone -b $BRANCH https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-wfm-event-ingestor-svc.git
            
            cd $REPO_NAME
            echo "Donde estoy"
