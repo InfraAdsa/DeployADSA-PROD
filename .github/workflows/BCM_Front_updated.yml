@@ -17,9 +17,9 @@ jobs:
       - name: Deploy remoto en servidor
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.HOSTNAME_95 }}
-          username: ${{ secrets.SSH_USERNAME_95 }}
-          key: ${{ secrets.SSH_PRIVATE_KEY_95 }}
+          host: ${{secrets.HOSTNAME_95}}
+          username: ${{secrets.SSH_USERNAME_95}}
+          key: ${{secrets.SSH_PRIVATE_KEY_95}}
           script: |
             set -e   
     
