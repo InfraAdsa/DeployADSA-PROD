@@ -28,25 +28,25 @@ jobs:
             cd /adsaenv/adsa/app/adsaweb
 
             # Backup si existe
-            if [ -d sa-bcm-wfmforms-ui ]; then
-              echo "Creando respaldo..."
-              mv sa-bcm-wfmforms-ui sa-bcm-wfmforms-ui_$(date +'%Y%m%d-%H%M')
-            fi
+            #if [ -d sa-bcm-wfmforms-ui ]; then
+             # echo "Creando respaldo..."
+              #mv sa-bcm-wfmforms-ui sa-bcm-wfmforms-ui_$(date +'%Y%m%d-%H%M')
+            #fi
 
             echo "Clonando repositorio..."
-            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
+            #git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
 
-            cd /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui 
+            #cd /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui 
     
             echo "Deteniendo contenedor si existe..."
-            docker stop bcm-wfmforms-ui-app 2>/dev/null || true
-            docker rm bcm-wfmforms-ui-app 2>/dev/null || true
+            #docker stop bcm-wfmforms-ui-app 2>/dev/null || true
+            #docker rm bcm-wfmforms-ui-app 2>/dev/null || true
     
             echo "Eliminando imagen anterior..."
-            docker rmi bcm-wfmforms-ui 2>/dev/null || true
+            #docker rmi bcm-wfmforms-ui 2>/dev/null || true
     
             echo "Construyendo imagen Docker..."
-            docker build -t bcm-wfmforms-ui .
+            #docker build -t bcm-wfmforms-ui .
              
             echo "Creando archivo .env temporal..."
             cat <<EOF > .env
