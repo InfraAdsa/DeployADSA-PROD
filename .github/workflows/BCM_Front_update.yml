@@ -1,0 +1,78 @@
+name: BCM_Front_SRV_95 --- sa-bcm-wfmforms-ui ---
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+    
+    env:
+     APP_NAME: bcm-wfmforms-ui-app
+     IMAGE_NAME: bcm-wfmforms-ui
+     BASE_PATH: /adsaenv/adsa/app/adsaweb
+     REPO_NAME: sa-bcm-wfmforms-ui
+     ###BRANCH: main
+     
+    steps:
+      - name: Deploy remoto en servidor
+        timeout-minutes: 10     
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOSTNAME_95}}
+          username: ${{secrets.SSH_USERNAME_95}}
+          key: ${{secrets.SSH_PRIVATE_KEY_95}}
+          script: |
+            set -e   
+    
+              echo "=== INICIANDO DEPLOY ==="
+
+            cd /adsaenv/adsa/app/adsaweb
+
+            # Backup si existe
+            if [ -d sa-bcm-wfmforms-ui ]; then
+              echo "Creando respaldo..."
+              mv sa-bcm-wfmforms-ui sa-bcm-wfmforms-ui_$(date +'%Y%m%d-%H%M')
+            fi
+
+            echo "Clonando repositorio..."
+            git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-wfmforms-ui.git
+
+            cd /adsaenv/adsa/app/adsaweb/sa-bcm-wfmforms-ui 
+    
+            echo "Deteniendo contenedor si existe..."
+            docker stop bcm-wfmforms-ui-app 2>/dev/null || true
+            docker rm bcm-wfmforms-ui-app 2>/dev/null || true
+    
+            echo "Eliminando imagen anterior..."
+            docker rmi bcm-wfmforms-ui 2>/dev/null || true
+    
+            echo "Construyendo imagen Docker..."
+            docker build -t bcm-wfmforms-ui .
+             
+            echo "Creando archivo .env temporal..."
+            cat <<EOF > .env
+              DB_SERVER=${{secrets.DB_SERVER}}
+              DB_PORT=${{secrets.DB_PORT}}
+              DB_SID=${{secrets.DB_SID}}
+              DB_USER=${{secrets.DB_USER}}
+              DB_PASS=${{secrets.DB_PASS}}
+              ASPNETCORE_ENVIRONMENT=PROD
+            EOF
+    
+            echo "Levantando contenedor..."
+            docker run -d \
+              --env-file .env \
+              -p 5103:8080 \
+              -v dataprotection-keys:/root/.aspnet/DataProtection-Keys \
+              --name bcm-wfmforms-ui-app \
+              --restart unless-stopped \
+              bcm-wfmforms-ui
+
+            echo "Verificando contenedor..."
+            docker ps -a
+
+            echo "Eliminando archivo .env por seguridad..."
+            rm -f .env
+
+             echo "=== DEPLOY FINALIZADO ==="   
+    
