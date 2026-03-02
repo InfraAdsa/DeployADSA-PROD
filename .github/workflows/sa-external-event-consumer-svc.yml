@@ -35,25 +35,23 @@ jobs:
             echo '### Repositorio clonado ###' 
             ls -lrt
             sleep 40
-            echo '### Detener y eliminar el Contenedor wfm-producer ###'
+            echo '### Detener y eliminar el Contenedor external-event-consumer ###'
             docker ps
             docker stop external-event-consumer
             sleep 40
-            #docker rm external-event-consumer
+            docker rm external-event-consumer
             echo '### elimininar la imagen ###'
             #docker images
             sleep 40
-            #docker rmi external-event-consumer
-            #docker images
+            docker rmi external-event-consumer
+            docker images
             echo '### Ejecutar el build y el deploy ###'
             cd /adsaenv/adsa/app/adsaweb/sa-external-event-consumer-svc
             ls -lrt
             docker build -t external-event-consumer .
-            sleep 40
-            ### docker run -d -p 5100:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
-            #$docker run -d -p 5100:8080 -e ASPNETCORE_ENVIRONMENT=Production -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
+            sleep 2
             docker run -d -p 8184:8080 -e  SPRING_PROFILES_ACTIVE=PROD --name external-event-consumer external-event-consumer
-            sleep 20
+            sleep 2
             echo '### contenedores corriendo ###'
             docker ps -a
             # echo '###### Enviar correo ######'
