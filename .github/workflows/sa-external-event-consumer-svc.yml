@@ -28,7 +28,7 @@ jobs:
             pwd
             ls -lrt 
             echo "###  respaldo del repositorio del servidor ###"
-            #mv sa-external-event-ingestor-svc /adsaenv/adsa/app/adsaweb/sa-external-event-ingestor-svc_$(date +'%Y%m%d-%H%M')
+            mv external-event-consumer /adsaenv/adsa/app/adsaweb/backup/external-event-consumer_$(date +'%Y%m%d-%H%M')
             ls -lrt 
             echo '### Clonar el repositorio sa-wfm-event-ingestor-svc ###'
             git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-external-event-consumer-svc.git
@@ -36,14 +36,14 @@ jobs:
             ls -lrt
             sleep 40
             echo '### Detener y eliminar el Contenedor wfm-producer ###'
-            #docker ps
-            #docker stop wfm-producer
+            docker ps
+            docker stop external-event-consumer
             sleep 40
-            #docker rm wfm-producer
+            #docker rm external-event-consumer
             echo '### elimininar la imagen ###'
             #docker images
             sleep 40
-            #docker rmi wfm-producer
+            #docker rmi external-event-consumer
             #docker images
             echo '### Ejecutar el build y el deploy ###'
             cd /adsaenv/adsa/app/adsaweb/sa-external-event-consumer-svc
@@ -51,8 +51,8 @@ jobs:
             docker build -t external-event-consumer .
             sleep 40
             ### docker run -d -p 5100:8080 -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
-            $docker run -d -p 5100:8080 -e ASPNETCORE_ENVIRONMENT=Production -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
-            docker run -d -p 8184:8080 --name external-event-consumer external-event-consumer
+            #$docker run -d -p 5100:8080 -e ASPNETCORE_ENVIRONMENT=Production -v dataprotection-keys:/root/.aspnet/DataProtection-Keys --name wfm-producer-app wfm-producer
+            docker run -d -p 8184:8080 -e  SPRING_PROFILES_ACTIVE=PROD --name external-event-consumer external-event-consumer
             sleep 20
             echo '### contenedores corriendo ###'
             docker ps -a
