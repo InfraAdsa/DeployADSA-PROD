@@ -36,7 +36,7 @@ jobs:
            fi
 
            echo "Clonando repositorio..."
-           git clone -b main https://${{secrets.GH_ACCESS_KEY}}@github.com/jeacor/sa-bcm-content-api.git
+           git clone -b main https://${{secrets.GH_ACCESS_KEY_JALS}}@github.com/joseantonio-lpz/sa-external-event-consumer-svc.git
 
            cd $REPO_NAME
            pwd
